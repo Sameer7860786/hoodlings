@@ -12,6 +12,7 @@ export default function LandingPage({ settings, onApply, onNavigateAdmin }: Land
   // Countdown Timer State
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
   const [isLiveDate, setIsLiveDate] = useState(false);
+  const [isMintLive, setIsMintLive] = useState(false);
 
   // Whitelist Timer State
   const [whitelistTimeLeft, setWhitelistTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
@@ -55,17 +56,7 @@ export default function LandingPage({ settings, onApply, onNavigateAdmin }: Land
   }, [settings.whitelistTimerTarget]);
 
   useEffect(() => {
-    if (!settings.countdown || settings.countdown.toUpperCase() === 'TBA' || settings.countdown.toUpperCase() === 'SOON') {
-      setIsLiveDate(false);
-      return;
-    }
-
-    const targetDate = new Date(settings.countdown);
-    if (isNaN(targetDate.getTime())) {
-      setIsLiveDate(false);
-      return;
-    }
-
+    const targetDate = new Date("2026-07-16T20:00:00+05:30");
     setIsLiveDate(true);
 
     const updateTimer = () => {
@@ -74,9 +65,11 @@ export default function LandingPage({ settings, onApply, onNavigateAdmin }: Land
 
       if (difference <= 0) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        setIsMintLive(true);
         return;
       }
 
+      setIsMintLive(false);
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
@@ -88,7 +81,7 @@ export default function LandingPage({ settings, onApply, onNavigateAdmin }: Land
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [settings.countdown]);
+  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-between px-4 py-8 md:px-8 max-w-7xl mx-auto z-10">
@@ -185,7 +178,7 @@ export default function LandingPage({ settings, onApply, onNavigateAdmin }: Land
           {/* Main Title Banner */}
           <div className="space-y-3">
             <div className="inline-flex items-center space-x-2 bg-neon-lime/10 border border-neon-lime/30 text-neon-lime px-3.5 py-1 rounded-full font-mono text-xs tracking-wider uppercase font-medium">
-              <span>WHITELIST ENROLLMENT</span>
+              <span>{isMintLive ? "MINT IS ACTIVE" : "MINTING SOON"}</span>
               <span className="w-2 h-2 rounded-full bg-neon-lime animate-ping" />
             </div>
             
@@ -266,41 +259,46 @@ export default function LandingPage({ settings, onApply, onNavigateAdmin }: Land
 
           </div>
 
-          {/* Whitelist Application Trigger */}
+          {/* Whitelist Application Section replaced with automated Mint controls */}
           <div className="w-full max-w-md pt-2 space-y-3">
-            {isWhitelistTimerActive && whitelistTimeLeft && (
-              <div className="bg-neon-lime/10 border border-neon-lime/30 rounded-2xl p-4 text-center space-y-1">
-                <div className="text-[10px] font-mono text-neon-lime uppercase tracking-widest flex items-center justify-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-neon-lime animate-ping" />
-                  <span>72H WHITELIST CLOSING COUNTDOWN</span>
-                </div>
-                <div className="text-xl font-mono font-bold text-white tracking-wider">
-                  {whitelistTimeLeft.days > 0 && `${whitelistTimeLeft.days}d `}
-                  {String(whitelistTimeLeft.hours).padStart(2, '0')}h{' '}
-                  {String(whitelistTimeLeft.minutes).padStart(2, '0')}m{' '}
-                  {String(whitelistTimeLeft.seconds).padStart(2, '0')}s
-                </div>
-              </div>
-            )}
+            <div className="pixel-card p-5 space-y-4 text-center bg-zinc-950/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl relative overflow-hidden">
+              {/* Inner glowing element */}
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neon-lime/40 to-transparent" />
 
-            {(settings.isWhitelistOpen && (!settings.whitelistTimerTarget || isWhitelistTimerActive)) ? (
-              <button
-                onClick={onApply}
-                className="w-full group relative overflow-hidden bg-neon-lime text-black font-display font-bold py-4 px-6 rounded-2xl flex items-center justify-center space-x-2 neon-glow-btn cursor-pointer"
-                id="apply-whitelist-btn"
-              >
-                {/* Button overlay */}
-                <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-                
-                <span className="text-sm md:text-base tracking-wide font-extrabold">APPLY FOR WHITELIST</span>
-                <ArrowRight size={18} className="transform group-hover:translate-x-1.5 transition-transform duration-200" />
-              </button>
-            ) : (
-              <div className="w-full bg-zinc-900/50 border border-red-500/30 text-red-400 p-4 rounded-2xl flex items-center justify-center space-x-2 font-mono text-sm uppercase tracking-wider">
-                <Lock size={16} />
-                <span>Whitelist Applications are currently closed</span>
+              <div className="space-y-1">
+                <div className="text-lg md:text-xl font-display font-bold text-white flex items-center justify-center gap-2">
+                  {isMintLive ? (
+                    <span className="text-neon-lime neon-glow-text flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-neon-lime animate-ping inline-block" />
+                      🟢 Mint is Live!
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Applications Closed ✅
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs font-mono text-zinc-400">
+                  {isMintLive ? "Mint is now live on OpenSea." : "Mint starts in less than 24 hours."}
+                </p>
               </div>
-            )}
+
+              <a
+                href="https://opensea.io/collection/hoodlings-hq/overview"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full group relative overflow-hidden bg-neon-lime text-black font-display font-bold py-4 px-6 rounded-2xl flex items-center justify-center space-x-2 neon-glow-btn cursor-pointer block text-center"
+                id="mint-now-btn"
+              >
+                {/* Button overlay shine */}
+                <span className="absolute inset-0 bg-white/25 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
+                
+                <span className="text-sm md:text-base tracking-wide font-extrabold uppercase">
+                  {isMintLive ? "Mint Now" : "Check Eligibility"}
+                </span>
+                <ArrowRight size={18} className="inline-block transform group-hover:translate-x-1.5 transition-transform duration-200" />
+              </a>
+            </div>
           </div>
 
         </div>

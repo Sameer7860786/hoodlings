@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "followXLink": "https://x.com/hoodlingsHQ",
+    "likeRepostLink": "https://x.com/i/status/2075618743426928856",
+    "isWhitelistOpen": false,
+    "chain": "RobinHood",
+    "supply": "8000",
+    "mintDate": "16 July 2026",
+    "mintPrice": "0.08$",
+    "countdown": "2026-07-16T20:00:00+05:30",
+    "logoUrl": "/assets/logo.png?v=3",
+    "mascotUrl": "/assets/mascot.png?v=3",
+    "bannerUrl": "/assets/banner.png?v=2",
+    "backgroundUrl": "/assets/background.png?v=2",
+    "faviconUrl": "/assets/favicon.png?v=2",
+    "shareWebsiteUrl": "https://ais-dev-ncon254u53y5jhufdiapyp-196041586240.asia-east1.run.app",
+    "whitelistTimerTarget": ""
+  },
+  "submissions": []
+}
